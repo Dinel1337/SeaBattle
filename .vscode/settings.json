@@ -1,0 +1,8 @@
+{
+    "python.pythonPath": "/home/dinelore/.cache/pypoetry/virtualenvs/backend-8JaGKQJT-py3.12/bin/python",
+    "python.analysis.extraPaths": [
+        "/home/dinelore/.cache/pypoetry/virtualenvs/backend-8JaGKQJT-py3.12/lib/python3.12/site-packages"
+    ],
+    "python.linting.pylintEnabled": false,
+    "python.linting.enabled": true
+}
