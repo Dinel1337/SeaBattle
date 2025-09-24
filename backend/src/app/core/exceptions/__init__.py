@@ -1,3 +1,5 @@
+# Это кастомные ошибки и их завертывание
+
 from .user_exception import (UserNotFoundExсeption,
                          UserErrorCreateExсeption,
                          UserEmailExistsExсeption,
