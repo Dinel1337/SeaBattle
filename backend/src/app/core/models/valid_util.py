@@ -1,5 +1,5 @@
 from email_validator import validate_email, EmailNotValidError
-from ..exceptions import EmailValidationError
+from ..exceptions import EmailValidationError, PasswordValidationError
 from typing import Any
 
 def validate_email_address(email: Any) -> str:
@@ -31,6 +31,29 @@ def validate_email_address(email: Any) -> str:
     except Exception as e:
         raise EmailValidationError(
             email=email,
-            reason="Неожиданные ",
+            reason="Неожиданные ошибки",
             error_type="VALIDATION_ERROR"
         )
+
+def password_length_check(password: Any):
+    """
+    Проверяет пароль на длину и корректность
+    """
+    if not isinstance(password, str):
+        raise PasswordValidationError(
+            reason="Пароль должен быть строкой",
+            error_type="VALIDATION_ERROR"
+        )
+
+    if len(password) < 6:
+        raise PasswordValidationError(
+            reason="Минимальная длина 6 символов",
+            error_type="TOO_SHORT"
+        )
+    
+    if len(password) > 32:
+        raise PasswordValidationError(
+            reason="Минимальная длина 6 символов",
+            error_type="TOO_LONG"
+        )
+    

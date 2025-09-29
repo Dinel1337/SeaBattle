@@ -4,7 +4,8 @@ from .user_exception import (UserNotFoundExсeption,
                          UserErrorCreateExсeption,
                          UserEmailExistsExсeption,
                          UserBadParametrError,
-                         EmailValidationError
+                         EmailValidationError,
+                         PasswordValidationError
                          )
 from .main_error import(
     BadParametrError

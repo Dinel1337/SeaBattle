@@ -4,9 +4,22 @@ from fastapi import status
 from .main_error import BadParametrError
 from typing import Optional
 
+suggestions_email = {
+    "TYPE_ERROR": "Email должен быть строкой, например 'user@example.com'",
+    "VALIDATION_ERROR": "Используйте формат user@example.com",
+    "UNKNOWN_ERROR": "Попробуйте другой email или повторите позже"
+}
+
+suggestions_password = {
+    "TYPE_ERROR": "Пароль должен быть строкой",
+    "VALIDATION_ERROR": "Пароль должен содержать минимум 6 символов, включая буквы",
+    "UNKNOWN_ERROR": "Попробуйте другой пароль или повторите позже",
+    "TOO_SHORT": "Пароль должен содержать минимум 6 символов",
+    "TOO_LONG": "Пароль должен содержать максимум 32 символа",
+}
+
 class UserNotFoundExсeption(AppException):
     """
-    'EA' Accepts a value that we did not find in the database search context\n
     'RU' Принимает на вход значение которое мы не нашли В КОНТЕКСТЕ ПОИСКА В БАЗЕ ДАННЫХ
     """
     def __init__(self, data: int | str):
@@ -52,20 +65,32 @@ class EmailValidationError(AppException):
             details={
                 "email": email,
                 "reason": reason,
-                "error_type": error_type,  # Добавляем тип ошибки
-                "suggestion": self._get_suggestion(error_type),
+                "error_type": error_type,
+                "suggestion": self._get_suggestion(error_type, suggestions_email, "Используйте корректный email адресс"),
                 'more' : more
             }
         )
     
-    def _get_suggestion(self, error_type: str) -> str:
-        """Возвращает подсказку в зависимости от типа ошибки"""
-        suggestions = {
-            "TYPE_ERROR": "Email должен быть строкой, например 'user@example.com'",
-            "VALIDATION_ERROR": "Используйте формат user@example.com",
-            "UNKNOWN_ERROR": "Попробуйте другой email или повторите позже"
-        }
-        return suggestions.get(error_type, "Используйте корректный email адрес")
+
+class PasswordValidationError(AppException):
+    """Ошибки валидации password с детализацией типа ошибки"""
+
+    def __init__(self,
+                reason: str,
+                more: Optional[str],
+                error_type: str = "VALIDATION_ERROR"):
+        super().__init__(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            error_code=ErrorEmail.INVALID_EMAIL.value,
+            message="Некорректный email адрес",
+            details={
+                "reason": reason,
+                "error_type": error_type,
+                "suggestion": self._get_suggestion(error_type, suggestions_password, "Используйте другой пароль"),
+                'more' : more
+            }
+        )
+        
 
 class UserBadParametrError(BadParametrError):
     def __init__(

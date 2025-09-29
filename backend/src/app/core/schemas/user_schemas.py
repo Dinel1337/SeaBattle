@@ -1,15 +1,14 @@
 from pydantic import BaseModel, ConfigDict, constr, field_validator
 from ..enum import OperationUserStatus
 from typing import Annotated
-from ..models import validate_email_address
+from ..models import validate_email_address, password_length_check
 from fastapi import Query
 
 PasswordStr = Annotated[
     str,
-    constr(min_length=8, max_length=64, pattern=r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$")
+    constr(min_length=6, max_length=32, pattern=r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$")
 ]
 
-# for create users
 class UserBase(BaseModel):
     email: str
     username: str
@@ -17,20 +16,29 @@ class UserBase(BaseModel):
     @field_validator('email')
     @classmethod
     def valid_email(cls, value: str) -> str:
+        value.strip()
         return validate_email_address(value)
 
 class UserCreate(UserBase):
     password: PasswordStr
-    
+    @field_validator('password')
+    @classmethod
+    def password_lenght(cls, v: str):
+        v = v.strip()
+        return password_length_check(v)
+
 class UserInDB(UserBase):
     model_config = ConfigDict(from_attributes=True)
     id: int
     status_operation: OperationUserStatus = OperationUserStatus.CREATED
 
-#for delete user
+
+
 class UserDelete(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: int
+
+
 
 class CheckUser(BaseModel):
     username: str | None = Query(None, description="Логин пользователя")

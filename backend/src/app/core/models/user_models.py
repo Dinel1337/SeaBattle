@@ -2,17 +2,17 @@ from sqlalchemy import Integer, String, Boolean, ForeignKey, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime, timezone
 from ..database import Base
+from ..enum import UserActive
 
 class User(Base):
-    __tablename__ = "users"  
+    __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     email: Mapped[str] = mapped_column(String(255), unique=True, index=True, nullable=False)
     username: Mapped[str] = mapped_column(String(50), unique=True, index=True)
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
-    active: Mapped[bool] = mapped_column(Boolean, default=True)
+    active: Mapped[UserActive] = mapped_column(Boolean, default=True)
 
-    
     refresh_tokens: Mapped[list["RefreshToken"]] = relationship(back_populates="user")
     access_tokens: Mapped[list["AccessToken"]] = relationship(back_populates="user")
 

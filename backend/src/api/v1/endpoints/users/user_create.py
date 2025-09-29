@@ -1,12 +1,11 @@
 from fastapi import APIRouter, Depends, status
-from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from backend.src.app.core.database.session import get_db
 from backend.src.app.core.schemas import UserCreate, UserInDB
 from backend.src.app.services.base import UserService
 from backend.src.app.core.repositories import UserRepository
 from backend.src.app.core.response import ApiResponse, API_response, construct_meta
-from backend.config import USER_PREFIX, USER_TAGS
+from backend.config import USER_PREFIX, USER_TAGS, USER_ROUTER
 
 router = APIRouter(
     prefix=USER_PREFIX,
@@ -14,7 +13,7 @@ router = APIRouter(
 )
 
 @router.post(
-    '/create',
+    USER_ROUTER,
     summary="Создает пользователя",
     responses={
         status.HTTP_200_OK: {'description': 'User create is success'},

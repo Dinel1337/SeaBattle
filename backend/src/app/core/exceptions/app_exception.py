@@ -9,11 +9,22 @@ class AppException(HTTPException):
         message: str | None = None,
         details: dict | None = None
     ):
+
         super().__init__(
             status_code=status_code,
             detail={
                 'error_code': error_code,
-                'message': message,  # Основное сообщение
-                'details': details or {}  # Дополнительные детали
+                'message': message,
+                'details': details or {}
             }
         )
+    def _get_suggestion(self,
+                        error_type: str, 
+                        suggestions: dict,
+                        response_message: str) -> str:
+        """Возвращает подсказку в зависимости от типа ошибки"""
+    
+        suggestions = suggestions
+
+        return suggestions.get(error_type, response_message)   
+        
