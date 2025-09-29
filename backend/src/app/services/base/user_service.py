@@ -1,13 +1,12 @@
-from passlib.context import CryptContext
+import bcrypt
 from ...core.repositories import UserRepository
 from ...core.schemas import UserCreate, UserInDB, UserDelete
 from ...core.exceptions import UserNotFoundExсeption, UserErrorCreateExсeption, UserEmailExistsExсeption, UserBadParametrError
 from ...core.enum import OperationUserStatus
+from ...core import crypt_pass
 import logging
 
 logger = logging.getLogger(__name__)
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 class UserService:
     def __init__(self, repository: UserRepository):
@@ -19,14 +18,15 @@ class UserService:
         ) -> UserInDB:
         if await self.repository.get_by_email(user_create.email):
             raise UserEmailExistsExсeption(user_create.email)
-
-        password = pwd_context.hash(user_create.password)
         
+        password_hash = crypt_pass(user_create.password)
+
         user = await self.repository.create_user({
             "email": user_create.email,
             "username": user_create.username,
-            "password": password
+            "password_hash": password_hash
         })
+
         if not user:
             raise UserErrorCreateExсeption(username=user_create.username)
         

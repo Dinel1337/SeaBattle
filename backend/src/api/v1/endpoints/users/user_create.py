@@ -27,12 +27,15 @@ async def create_user(
     user_data: UserCreate,
     db: AsyncSession = Depends(get_db)
     ) -> ApiResponse[UserInDB]:
-    
+
     service = UserService(UserRepository(db))
     try:
         user = await service.create_user(user_data)
         meta = construct_meta(reason="Пользователь успешно создан")
 
-        return API_response(status_code= status.HTTP_201_CREATED, success=True, data=user, meta=meta)
+        return API_response(status_code=status.HTTP_201_CREATED, 
+                            success=True, 
+                            data=user, 
+                            meta=meta)
     except Exception as e:
         raise

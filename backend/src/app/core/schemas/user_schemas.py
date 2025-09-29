@@ -16,11 +16,12 @@ class UserBase(BaseModel):
     @field_validator('email')
     @classmethod
     def valid_email(cls, value: str) -> str:
-        value.strip()
+        value = value.strip()
         return validate_email_address(value)
 
 class UserCreate(UserBase):
     password: PasswordStr
+    
     @field_validator('password')
     @classmethod
     def password_lenght(cls, v: str):

@@ -57,3 +57,4 @@ def password_length_check(password: Any):
             error_type="TOO_LONG"
         )
     
+    return password
