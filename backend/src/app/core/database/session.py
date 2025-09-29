@@ -4,8 +4,8 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 import os
 from collections.abc import AsyncGenerator
-from ..models import Base
 from backend.config import ECHO
+from .base import Base
 
 DATABASE = os.getenv('DATABASE_URL').strip(' "\'').lower()
 

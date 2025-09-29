@@ -1,9 +1,7 @@
 from sqlalchemy import Integer, String, Boolean, ForeignKey, DateTime
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime, timezone
-
-class Base(DeclarativeBase):
-    pass
+from ..database import Base
 
 class User(Base):
     __tablename__ = "users"  
