@@ -1,72 +1,55 @@
 from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
-from ..models import User, Base
+from ..models import User, Base, AccessToken, RefreshToken
+from typing import Type 
 import logging
-import bcrypt
-
+from .main_repository import BaseRepository
 logger = logging.getLogger(__name__)
 
-def hash_password(password: str) -> str:
-    """Хэширование пароля"""
-    salt = bcrypt.gensalt()
-    hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
-    return hashed.decode('utf-8')
-
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """Проверка пароля"""
-    return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
-
-class UserRepository():
+class UserRepository:
     def __init__(self, session: AsyncSession):
         self.session = session
-        
+        self.UserBase = BaseRepository(session, User) # горжусь своим мозгом что додумался использовать инкапсуляцию по максимуму)))
+        self.AccessTokenBase = BaseRepository(session, AccessToken)
+        self.RefreshTokenBase = BaseRepository(session, RefreshToken)
+
     async def get_id_by_username(self, username: str) -> int | None:
-        """получение ID пользователя по username"""
-        result = await self.session.execute(select(User.id).where(User.username == username))
-        return result.scalar_one_or_none()
+        return await self.UserBase.find_scalar_by(User.id, username=username)
 
     async def get_by_id(self, user_id: int) -> User | None:
-        """Поиск пользователя по ID"""
-        result = await self.session.execute(select(User).where(User.id == user_id))
-        return result.scalar_one_or_none()
+        return await self.UserBase.find_one_by(id=user_id)
     
     async def get_by_email(self, user_email: str) -> User | None:
-        """Поиск пользователя по email"""
-        result = await self.session.execute(select(User).where(User.email == user_email))
-        return result.scalar_one_or_none()
+        return await self.UserBase.find_one_by(email=user_email)
     
     async def get_by_username(self, username: str) -> User | None:
-        """Поиск пользователя по нику"""
-        result = await self.session.execute(select(User).where(User.username == username))
-        return result.scalar_one_or_none()
+        return await self.UserBase.find_one_by(username=username)
     
     async def create_user(self, data: dict) -> User | bool:
-        """Создания пользователя"""
-        try:
-            user = User(**data)
-            self.session.add(user)
-            await self.session.commit()
-            await self.session.refresh(user)
-            return user
-        except:
-            return False
+        return await self.UserBase.create(data)
 
-    async def create_token(self, data:dict, table: Base) -> Base | bool:
-        """Создание токенов"""
-        try:
-            token = table(**data)
-            self.session.add(token)
-            await self.session.commit()
-            await self.session.refresh(token)
-            return token
-        except:
-            return False
+    async def create_token(self, data: dict, token_model: Type[Base]) -> Base | bool:
+        """
+        Создание записи токена в БД
+
+        Параметры:
+        - data: Основные данные записи
+        - token_model: Модель таблицы БД
+        """
+        token_repo = BaseRepository(self.session, token_model)
+        return await token_repo.create(data)
 
     async def delete_user_in_base(self, user_id: int) -> bool:
-        """Удаление пользоватея из БД"""
-        try:
-            result = await self.session.execute(delete(User).where(User.id == user_id))
-            await self.session.commit()
-            return result.rowcount > 0
-        except:
-            return False
+        return await self.UserBase.delete_by_id(user_id)
+    
+    async def get_token_info(self, token: str, token_model: Type[Base]) -> bool:
+        """
+        Создание записи токена в БД
+
+        Параметры:
+        - token: Полученный токен
+        - token_model: Модель таблицы БД
+        """
+        token_repo = BaseRepository(self.session, token_model)
+        token_info = await token_repo.find_one_by(token=token)
+        return token_info is not None

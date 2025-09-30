@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from backend.src.app.core.database.session import get_db
+from backend.src.app.core.database import get_db
 from backend.src.app.core.schemas import UserCreate, UserInDB
 from backend.src.app.services.base import UserService
 from backend.src.app.core.repositories import UserRepository
 from backend.src.app.core.response import ApiResponse, API_response, construct_meta
-from backend.config import USER_PREFIX, USER_TAGS, USER_ROUTER
+from backend.config import USER_PREFIX, USER_TAGS, USER_ROUTER_CREATE
 
 router = APIRouter(
     prefix=USER_PREFIX,
@@ -13,7 +13,7 @@ router = APIRouter(
 )
 
 @router.post(
-    USER_ROUTER,
+    USER_ROUTER_CREATE,
     summary="Создает пользователя",
     responses={
         status.HTTP_200_OK: {'description': 'User create is success'},
@@ -33,9 +33,11 @@ async def create_user(
         user = await service.create_user(user_data)
         meta = construct_meta(reason="Пользователь успешно создан")
 
-        return API_response(status_code=status.HTTP_201_CREATED, 
-                            success=True, 
-                            data=user, 
-                            meta=meta)
+        return API_response(
+            status_code=status.HTTP_201_CREATED, 
+            success=True, 
+            data=user, 
+            meta=meta
+            )
     except Exception as e:
         raise

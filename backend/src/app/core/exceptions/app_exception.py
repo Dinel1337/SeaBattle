@@ -1,11 +1,11 @@
 from fastapi import HTTPException
-from ..enum import ErrorUser
+from enum import Enum
 
 class AppException(HTTPException):
     def __init__(
         self,
         status_code: int,
-        error_code: ErrorUser | None = None,
+        error_code: Enum | None = None,
         message: str | None = None,
         details: dict | None = None
     ):

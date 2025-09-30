@@ -31,15 +31,11 @@ class UserCreate(UserBase):
 class UserInDB(UserBase):
     model_config = ConfigDict(from_attributes=True)
     id: int
-    status_operation: OperationUserStatus = OperationUserStatus.CREATED
-
-
+    status_operation: OperationUserStatus | None = OperationUserStatus.CREATED 
 
 class UserDelete(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: int
-
-
 
 class CheckUser(BaseModel):
     username: str | None = Query(None, description="Логин пользователя")
@@ -51,4 +47,12 @@ class CheckUser(BaseModel):
         """Валидация email если он передан"""
         if value is None:
             return value
-        return validate_email_address(value)  # Ваш кастомный валидатор
+        return validate_email_address(value)
+
+
+
+class UserLoginResponse(BaseModel):
+    username: str
+    password: str
+    token: str
+    

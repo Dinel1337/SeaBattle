@@ -76,4 +76,10 @@ class UserService:
         if user:
             return UserInDB.model_validate(user)
         raise UserNotFoundExсeption(identifier)
+    
+    # async def check_token_info(
+    #         self,
+    #         token: str
+    #     ) -> :
+    #     token_info = self.repository.
             

@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, status
-from fastapi.responses import JSONResponse
-from backend.config import USER_PREFIX, USER_TAGS
+from backend.config import USER_PREFIX, USER_TAGS, USER_ROUTER_DELETE
 from backend.src.app.core.database.session import get_db
 from backend.src.app.services.base import UserService
 from backend.src.app.core.repositories import UserRepository
@@ -14,7 +13,7 @@ router = APIRouter(
 )
 
 @router.delete(
-    '/delete/{user_id}',
+    USER_ROUTER_DELETE + '/{user_id}',
     summary='Удаляет пользователя',
     response_description="Удаляет пользователя из PostgresSQL в случае успеха вернет ok",
     responses={

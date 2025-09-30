@@ -6,7 +6,7 @@ from backend.src.app.core.schemas import CheckUser, UserInDB
 from backend.src.app.services.base import UserService
 from backend.src.app.core.repositories import UserRepository
 from backend.src.app.core.response import API_response, construct_meta, ApiResponse
-from backend.config import USER_PREFIX, USER_TAGS
+from backend.config import USER_PREFIX, USER_TAGS, USER_ROUTER_CHECK
 from datetime import datetime, timezone
 
 router = APIRouter(
@@ -15,7 +15,7 @@ router = APIRouter(
 )
 
 @router.get(
-    '/check',
+    USER_ROUTER_CHECK,
     summary='Проверяет наличае пользователя',
     response_description="проверяет пользователя в таблице Postgres SQL, вернет http статус и сами данные пользователя в зависимости от роли того кто запрашивает",
         responses={
