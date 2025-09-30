@@ -6,7 +6,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-T = TypeVar('T', Base)
+T = TypeVar('T', bound=Base)
 
 class BaseRepository(Generic[T]):
     def __init__(self, session: AsyncSession, model: Type[T]):

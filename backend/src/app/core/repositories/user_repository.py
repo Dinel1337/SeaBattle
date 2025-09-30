@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 class UserRepository:
     def __init__(self, session: AsyncSession):
         self.session = session
-        self.UserBase = BaseRepository(session, User) # горжусь своим мозгом что додумался использовать инкапсуляцию по максимуму)))
+        self.UserBase = BaseRepository(session, User)
         self.AccessTokenBase = BaseRepository(session, AccessToken)
         self.RefreshTokenBase = BaseRepository(session, RefreshToken)
 
@@ -41,8 +41,12 @@ class UserRepository:
 
     async def delete_user_in_base(self, user_id: int) -> bool:
         return await self.UserBase.delete_by_id(user_id)
-    
-    async def get_token_info(self, token: str, token_model: Type[Base]) -> bool:
+
+    # async def get_access_token_by_id(self, user_id: int, token_model: Type[Base]) -> User | None:
+    #     token = self.AccessTokenBase.find_one_by(id=user_id)
+    #     return 
+
+    async def check_token_info_access_token(self, token: str) -> bool:
         """
         Создание записи токена в БД
 
@@ -50,6 +54,5 @@ class UserRepository:
         - token: Полученный токен
         - token_model: Модель таблицы БД
         """
-        token_repo = BaseRepository(self.session, token_model)
-        token_info = await token_repo.find_one_by(token=token)
+        token_info = await self.AccessTokenBase.find_one_by(access_token=token)
         return token_info is not None

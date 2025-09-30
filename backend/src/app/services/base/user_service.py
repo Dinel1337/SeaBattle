@@ -23,6 +23,9 @@ class UserService:
         if await self.repository.get_by_email(user_create.email):
             raise UserEmailExistsExсeption(user_create.email)
         
+        if await self.repository.get_by_username(user_create.username):
+            raise UserEmailExistsExсeption(f"Username {user_create.username} already exists") # КОСТЫЛЬ ЗАМЕНИИ НА НОРМАЛЬНУЮ ОШИБКУУУУУУУУУУУУУУУ
+
         expires_at_access = datetime.now(timezone.utc) + timedelta(ACCESS_TOKEN_EXPIRE_MINUTES)
         expires_at_refresh = datetime.now(timezone.utc) + timedelta(REFRESH_TOKEN_EXPIRE_DAYS)
 
@@ -77,9 +80,9 @@ class UserService:
             return UserInDB.model_validate(user)
         raise UserNotFoundExсeption(identifier)
     
-    # async def check_token_info(
-    #         self,
-    #         token: str
-    #     ) -> :
-    #     token_info = self.repository.
+    async def check_token_info(
+            self,
+            token: str):
+        token_info = self.repository.check_token_info_access_token(token, AccessToken)
+        print(token_info)
             
