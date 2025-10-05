@@ -18,7 +18,8 @@ HEALTH_TAGS = 'health'
 HEALTH_ROUTER = '/health'
 
 #auth
-AUTH_PREFIX = '/users'
-AUTH_TAGS = 'users'
+AUTH_PREFIX = '/login'
+AUTH_TAGS = 'login'
 AUTH_ROUTER_LOGIN = '/login'
 
+MIDDLEWARE_INGNORE = [HEALTH_ROUTER, ]

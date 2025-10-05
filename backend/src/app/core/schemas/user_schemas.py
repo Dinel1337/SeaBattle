@@ -40,7 +40,8 @@ class UserDelete(BaseModel):
 class CheckUser(BaseModel):
     username: str | None = Query(None, description="Логин пользователя")
     email: str | None = Query(None, description="Email пользователя")
-
+    token: str | None = Query(None, description="token пользователя")
+    
     @field_validator('email')
     @classmethod
     def validate_email(cls, value: str | None) -> str | None:

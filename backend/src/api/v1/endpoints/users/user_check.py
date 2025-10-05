@@ -1,5 +1,4 @@
 from fastapi import status, APIRouter, Depends, Query
-from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from backend.src.app.core.database.session import get_db
 from backend.src.app.core.schemas import CheckUser, UserInDB
@@ -7,7 +6,6 @@ from backend.src.app.services.base import UserService
 from backend.src.app.core.repositories import UserRepository
 from backend.src.app.core.response import API_response, construct_meta, ApiResponse
 from backend.config import USER_PREFIX, USER_TAGS, USER_ROUTER_CHECK
-from datetime import datetime, timezone
 
 router = APIRouter(
     prefix=USER_PREFIX,
@@ -33,7 +31,7 @@ async def check_user(
     try:
         user = await service.check_user_base(username=params.username, email=params.email)
         meta = construct_meta(reason="Пользователь найден")
-
+        
         return API_response(status_code=status.HTTP_200_OK ,success=True, data=user, meta=meta)
     
     except Exception as e:

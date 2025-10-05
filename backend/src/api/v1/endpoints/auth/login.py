@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from backend.config import AUTH_PREFIX, AUTH_ROUTER_LOGIN, AUTH_TAGS
+from backend.config import AUTH_PREFIX, AUTH_ROUTER_LOGIN, AUTH_TAGS, USER_TAGS
 from backend.src.app.core.response import ApiResponse
 from backend.src.app.core.schemas import UserLoginResponse, UserInDB
 from backend.src.app.services.base import UserService
@@ -9,7 +9,7 @@ from backend.src.app.core.database import get_db
 
 router = APIRouter(
     prefix=AUTH_PREFIX,
-    tags=[AUTH_TAGS]
+    tags=[AUTH_TAGS, USER_TAGS]
 )
 
 @router.post(
@@ -32,4 +32,4 @@ async def login_user(
         data.token = service
         user = ...
     except:
-        raise ... 
+        raise ...   

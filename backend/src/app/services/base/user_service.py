@@ -70,6 +70,7 @@ class UserService:
         username: str | None = None,
         email: str | None = None
     ) -> UserInDB:
+        
         if not (identifier := email or username):
             raise UserBadParametrError()
         
@@ -83,6 +84,5 @@ class UserService:
     async def check_token_info(
             self,
             token: str):
-        token_info = self.repository.check_token_info_access_token(token, AccessToken)
-        print(token_info)
+        token_info = await self.repository.check_token_info_access_token(token)
             
